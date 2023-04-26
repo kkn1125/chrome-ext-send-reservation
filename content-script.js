@@ -20,6 +20,11 @@
   let selectBar;
   let cancelBtn;
 
+  const timestamp = () =>
+    `${new Date().getFullYear()}-${
+      new Date().getMonth() + 1
+    }-${new Date().getDate()} ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`;
+
   function createPop() {
     if (document.querySelectorAll("#wrapper"))
       document.querySelectorAll("#wrapper").forEach((el) => el.remove());
@@ -67,6 +72,7 @@
           z-index: 1000;
           background-color: #ffffff;
           width: 90vw;
+          max-width: 420px;
       }
       #ta {
           flex: 1;
@@ -195,7 +201,7 @@
           }`;
           if (restTime <= 0) {
             wrapper.style.flexDirection = "column";
-            wrapper.innerHTML = `<strong>예약 전송이 완료되었습니다! [예약 시간: ${timeRead}]</strong><br/><span>예약 내용: <br/> ${reserveContent}</span><button class="buttons" onclick="wrapper.remove()">확인</button>`;
+            wrapper.innerHTML = `<strong>예약 전송이 완료되었습니다! [예약 시간: ${timeRead}] [전송된 시간: ${timestamp()}]</strong><br/><span>예약 내용: <br/> ${reserveContent}</span><button class="buttons" onclick="wrapper.remove()">확인</button>`;
             clearInterval(delay);
             clearTimeout(reserve);
             selectBar.removeEventListener("change", changeHandler);
@@ -224,8 +230,12 @@
     const textarea =
       closest("input") ||
       closest("textarea") ||
-      closest("input")?.hasAttribute("contenteditable") ||
-      closest("textarea")?.hasAttribute("contenteditable");
+      (closest("input")?.hasAttribute("contenteditable") && closest("input")) ||
+      (closest("textarea")?.hasAttribute("contenteditable") &&
+        closest("textarea")) ||
+      (target.tagName === "TEXTAREA" && target) ||
+      (target.hasAttribute("contenteditable") && target);
+    console.log(textarea);
     const button = closest("button");
 
     if (!selection.textTarget && isSelecting && textarea) {
